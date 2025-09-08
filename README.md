@@ -87,3 +87,55 @@ OK，路径配好后，请尝试
 bin/hadoop
 ```
 看是否显示hadoop使用文档（即一大堆英文）如果是，就可以开始准备部署了！
+
+## 开始尝试部署伪分布式集群
+### 1.首先修改必要配置
+将etc/hadoop/core-site.xml文件中内容修改为
+```
+<configuration>
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://localhost:9000</value>
+    </property>
+</configuration>
+```
+将etc/hadoop/hdfs-site.xml内文件修改为
+```
+<configuration>
+    <property>
+        <name>dfs.replication</name>
+        <value>1</value>
+    </property>
+</configuration>
+```
+### 2.设置本地无密码ssh
+首先在终端输入
+```
+ssh localhost
+```
+在连接时候如果是第一次安装会遇到这种情况：![](需要密码.png)如图，需要输入密码
+
+这种情况下，我们需要配对密钥，请按照以下步骤进行。
+在你的终端中依次输入下面三行代码：
+```
+#生成RSA密钥
+ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
+#把公钥追加到本机
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+#修正权限宽度
+chmod 0600 ~/.ssh/authorized_keys
+```
+**每一步反馈如下：**
+
+#生成RSA密钥
+![](密钥.png)
+#把公钥追加到本机
+无输出
+#修正权限宽度
+无输出
+
+此时再次执行```ssh localhost```则会出现如下图所示：![](免密连接.png)
+
+现在就完成了电脑的免密配置，可以开始连接，并进行文件操作了！
+
+
